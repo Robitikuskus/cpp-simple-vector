@@ -47,7 +47,7 @@ public:
     : items_(other.size_)
     , size_(other.size_)
     , capacity_(other.capacity_) {
-        std::copy(other.begin(), other.end(), begin());
+        CopyAndSwap(other);
     }
 
     explicit SimpleVector(std::initializer_list<Type> init) {
