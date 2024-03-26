@@ -75,13 +75,8 @@ public:
     SimpleVector& operator=(SimpleVector&& other) noexcept {
         if (this != &other) {
             Clear();
-            
-            items_.swap(other.items_);
-            size_ = other.size_;
-            capacity_ = other.capacity_;
-            
-            other.size_ = 0;
-            other.capacity_ = 0;
+            SimpleVector t(std::move(other));
+            swap(t);
         }
         return *this;
     }
@@ -286,12 +281,12 @@ inline bool operator<(const SimpleVector<Type>& lhs, const SimpleVector<Type>& r
 
 template <typename Type>
 inline bool operator<=(const SimpleVector<Type>& lhs, const SimpleVector<Type>& rhs) {
-    return lhs < rhs || lhs == rhs;
+    return !(rhs < lhs);
 }
 
 template <typename Type>
 inline bool operator>(const SimpleVector<Type>& lhs, const SimpleVector<Type>& rhs) {
-    return !(lhs <= rhs);
+    return rhs < lhs;
 }
 
 template <typename Type>
