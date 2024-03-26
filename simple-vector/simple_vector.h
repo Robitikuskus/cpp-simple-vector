@@ -32,11 +32,7 @@ public:
     explicit SimpleVector(size_t size) 
     : items_(size)
     , size_(size)
-    , capacity_(size) {
-        for (size_t i = 0; i < size; ++i) {
-            items_[i] = std::move(Type());
-        }
-    }
+    , capacity_(size) {}
 
     explicit SimpleVector(size_t size, const Type& value)
     : items_(size, value)
@@ -59,7 +55,9 @@ public:
     }
 
     SimpleVector(SimpleVector&& other) noexcept
-    : items_(std::move(other.items_)), size_(other.size_), capacity_(other.capacity_) {
+    : items_(std::move(other.items_))
+    , size_(other.size_)
+    , capacity_(other.capacity_) {
         other.size_ = 0;
         other.capacity_ = 0;
     }
@@ -184,17 +182,10 @@ public:
 
     void Resize(size_t new_size) {
         if (new_size > capacity_) {
-            SimpleVector new_vector(new_size);
-            
-            for (size_t i = 0; i < size_; ++i) {
-                new_vector.items_[i] = std::move(items_[i]);
-            }
-            items_.swap(new_vector.items_);
-            
-            capacity_ = std::max(new_size, capacity_ * 2);
+            IncreaseCapacity(std::max(new_size, capacity_ * 2));
         } else if (new_size > size_) {
             for (size_t i = size_; i < new_size; ++i) {
-                items_[i] = Type();
+                items_[i] = std::move(Type());
             }
         }
         size_ = new_size;
